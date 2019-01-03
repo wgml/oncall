@@ -10,8 +10,9 @@ from ...auth import login_required, check_team_auth
 from ... import db
 
 HOUR = 60 * 60
-WEEK = 24 * HOUR * 7
-simple_ev_lengths = set([WEEK, 2 * WEEK])
+DAY = 24 * HOUR
+WEEK = DAY * 7
+simple_ev_lengths = set([DAY, WEEK, 2 * WEEK])
 simple_12hr_num_events = set([7, 14])
 
 columns = {
@@ -59,10 +60,12 @@ constraints = {
 def validate_simple_schedule(events):
     '''
     Return boolean whether a schedule can be represented in simple mode. Simple schedules can have:
+    1. One event that is one day long
     1. One event that is one week long
     2. One event that is two weeks long
     3. Seven events that are 12 hours long
     4. Fourteen events that are 12 hours long
+    4. Fuckton events that are 12 hours long
     '''
     if len(events) == 1 and events[0]['duration'] in simple_ev_lengths:
         return True

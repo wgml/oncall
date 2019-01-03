@@ -256,7 +256,7 @@
             </tr>
           {{/each}}
         </table>
-      </div> 
+      </div>
       {{else}}
         <ul class="search-module">
           <h4>No users found</h4>
@@ -1023,7 +1023,7 @@
         {{/if}}
         <div class="pull-right">
           <div class="toggle-input pull-right">
-            <input type="checkbox" class="toggle-advanced" id="toggle-advanced-{{selected_schedule.id}}" {{#if selected_schedule.advanced_mode}} checked {{/if}}>
+            <input disabled type="checkbox" class="toggle-advanced" id="toggle-advanced-{{selected_schedule.id}}" {{#if selected_schedule.advanced_mode}} checked {{/if}}>
             <label for="toggle-advanced-{{selected_schedule.id}}">Advanced</label>
           </div>
         </div>
@@ -1152,8 +1152,9 @@
         <label>Rotate:</label>
         <br>
         <select name="time" class="form-control rotation-end-duration">
-          <option value="7" {{#if totalEvents}} {{isSelected totalEvents 7}} {{else}} {{isSelected duration 7}} {{/if}}>Weekly</option>
-          <option value="14" {{#if totalEvents}} {{isSelected totalEvents 14}} {{else}} {{isSelected duration 14}} {{/if}}>Bi-Weekly</option>
+          <option value="1" {{#if totalEvents}} {{isSelected totalEvents 1}} {{else}} {{isSelected duration 1}} {{/if}}>Daily</option>
+          <!-- <option value="7" {{#if totalEvents}} {{isSelected totalEvents 7}} {{else}} {{isSelected duration 7}} {{/if}}>Weekly</option> -->
+          <!-- <option value="14" {{#if totalEvents}} {{isSelected totalEvents 14}} {{else}} {{isSelected duration 14}} {{/if}}>Bi-Weekly</option> -->
         </select>
       </div>
     {{else}}

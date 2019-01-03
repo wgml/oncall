@@ -238,16 +238,18 @@ class Scheduler(object):
 
     def get_period_len(self, schedule):
         '''
-        Find schedule rotation period in weeks, rounded up
+        Find schedule rotation period in days, rounded up
         '''
         events = schedule['events']
         first_event = min(events, key=operator.itemgetter('start'))
         end = max(e['start'] + e['duration'] for e in events)
         period = end - first_event['start']
-        return ((period + SECONDS_IN_A_WEEK - 1) / SECONDS_IN_A_WEEK)
+        return ((period + SECONDS_IN_A_DAY - 1) / SECONDS_IN_A_DAY)
 
     def calculate_future_events(self, schedule, cursor, start_epoch=None):
+        print(schedule)
         period = self.get_period_len(schedule)
+        period_timedelta = timedelta(days=period)
 
         # DEFINITION:
         # epoch: Sunday at 00:00:00 in the schedule's local timezone. This is our point of reference when
@@ -267,7 +269,7 @@ class Scheduler(object):
                 # epoch and work from there)
                 last_epoch_dt = datetime.fromtimestamp(last_epoch_timestamp, utc)
                 localized_last_epoch = last_epoch_dt.astimezone(timezone(schedule['timezone']))
-                next_epoch = self.get_closest_epoch(localized_last_epoch) + timedelta(days=7 * period)
+                next_epoch = self.get_closest_epoch(localized_last_epoch) + period_timedelta
         else:
             next_epoch = start_epoch
 
@@ -277,11 +279,11 @@ class Scheduler(object):
         # Start scheduling from the next epoch
         while cutoff_date > next_epoch:
             epoch_events = self.generate_events(schedule, schedule['events'], next_epoch)
-            next_epoch += timedelta(days=7 * period)
+            next_epoch += period_timedelta
             if epoch_events:
                 future_events.append(epoch_events)
         # Return future events and the last epoch events were scheduled for.
-        return future_events, self.utc_from_naive_date(next_epoch - timedelta(days=7 * period), schedule)
+        return future_events, self.utc_from_naive_date(next_epoch - period_timedelta, schedule)
 
     def find_next_user_id(self, schedule, future_events, cursor, table_name='event'):
         team_id = schedule['team_id']
